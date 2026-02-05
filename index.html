@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Arsip Dokumen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #ffffff;
+            padding: 20px 0;
+            border-bottom: 1px solid #e0e6ed;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        header h1 {
+            font-size: 28px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+
+        /* INPUT SECTION */
+        .input-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+        }
+
+        .input-section h2 {
+            font-size: 18px;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="file"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="file"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        input[type="file"] {
+            padding: 8px 12px;
+        }
+
+        .file-info {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 6px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background-color: #2563eb;
+        }
+
+        /* OUTPUT SECTION */
+        .output-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .output-section h2 {
+            font-size: 18px;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .filter-section {
+            margin-bottom: 25px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-group input {
+            padding: 9px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        .filter-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+        }
+
+        thead {
+            background-color: #f3f4f6;
+        }
+
+        th {
+            padding: 14px 12px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .action-btn {
+            background-color: #3b82f6;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background-color: #2563eb;
+        }
+
+        /* DETAIL VIEW SECTION */
+        .detail-section {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: none;
+        }
+
+        .detail-section.active {
+            display: block;
+        }
+
+        .detail-header {
+            margin-bottom: 25px;
+        }
+
+        .detail-header h2 {
+            font-size: 22px;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .detail-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .detail-item {
+            background-color: #f9fafb;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .detail-item-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .detail-item-value {
+            font-size: 16px;
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .preview-section {
+            margin-bottom: 25px;
+        }
+
+        .preview-section h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .preview-container {
+            background-color: #f3f4f6;
+            border: 2px dashed #d1d5db;
+            border-radius: 6px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 14px;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .preview-icon {
+            font-size: 48px;
+            opacity: 0.3;
+        }
+
+        .detail-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-start;
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+            padding: 11px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+            padding: 11px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #9ca3af;
+            padding: 40px 20px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-section {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .detail-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 22px;
+            }
+
+            .filter-section {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-actions {
+                flex-direction: column;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>📑 Sistem Arsip Dokumen</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <!-- INPUT SECTION -->
+            <div class="input-section">
+                <h2>Input Dokumen</h2>
+                <form id="inputForm">
+                    <div class="form-group">
+                        <label for="nomorSurat">Nomor Surat</label>
+                        <input type="text" id="nomorSurat" placeholder="Contoh: 001/ADM/2024">
+                    </div>
+                    <div class="form-group">
+                        <label for="namaSurat">Nama Surat</label>
+                        <input type="text" id="namaSurat" placeholder="Masukkan nama surat">
+                    </div>
+                    <div class="form-group">
+                        <label for="tanggalSurat">Tanggal Surat</label>
+                        <input type="date" id="tanggalSurat">
+                    </div>
+                    <div class="form-group">
+                        <label for="lampiran">Lampiran (PDF, JPG, PNG)</label>
+                        <input type="file" id="lampiran" accept=".pdf,.jpg,.jpeg,.png">
+                        <div class="file-info">Maksimal ukuran: 10MB</div>
+                    </div>
+                    <button type="submit" class="submit-btn">Simpan Dokumen</button>
+                </form>
+            </div>
+
+            <!-- OUTPUT SECTION -->
+            <div class="output-section">
+                <h2>Daftar Dokumen</h2>
+                
+                <!-- FILTER SECTION -->
+                <div class="filter-section">
+                    <div class="filter-group">
+                        <label for="searchNama">Cari Nama Surat</label>
+                        <input type="text" id="searchNama" placeholder="Ketik nama surat...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterFromDate">Dari Tanggal</label>
+                        <input type="date" id="filterFromDate">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterToDate">Sampai Tanggal</label>
+                        <input type="date" id="filterToDate">
+                    </div>
+                </div>
+
+                <!-- TABLE SECTION -->
+                <div class="table-wrapper">
+                    <table id="documentsTable">
+                        <thead>
+                            <tr>
+                                <th>Nomor Surat</th>
+                                <th>Nama Surat</th>
+                                <th>Tanggal</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div id="emptyMessage" class="empty-message" style="display: none;">Tidak ada dokumen yang tersedia</div>
+            </div>
+        </div>
+
+        <!-- DETAIL SECTION -->
+        <div class="detail-section" id="detailSection">
+            <div class="detail-header">
+                <h2>Detail Dokumen</h2>
+            </div>
+
+            <div class="detail-info">
+                <div class="detail-item">
+                    <div class="detail-item-label">Nomor Surat</div>
+                    <div class="detail-item-value" id="detailNomorSurat">-</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">Nama Surat</div>
+                    <div class="detail-item-value" id="detailNamaSurat">-</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">Tanggal Surat</div>
+                    <div class="detail-item-value" id="detailTanggalSurat">-</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">Tipe File</div>
+                    <div class="detail-item-value" id="detailTipeFile">-</div>
+                </div>
+            </div>
+
+            <div class="preview-section">
+                <h3>Preview File</h3>
+                <div class="preview-container" id="previewContainer">
+                    <div class="preview-icon">📄</div>
+                    <div>Preview file dokumen</div>
+                </div>
+            </div>
+
+            <div class="detail-actions">
+                <button class="btn-primary" onclick="downloadFile()">⬇ Download File</button>
+                <button class="btn-secondary" onclick="backToList()">← Kembali ke Daftar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Placeholder data
+        const documents = [
+            {
+                id: 1,
+                nomorSurat: '001/ADM/2024',
+                namaSurat: 'Surat Pengumuman Libur Nasional',
+                tanggal: '2024-01-15',
+                tipeFile: 'PDF',
+                icon: '📄'
+            },
+            {
+                id: 2,
+                nomorSurat: '002/HRM/2024',
+                namaSurat: 'Kebijakan Cuti Karyawan',
+                tanggal: '2024-02-10',
+                tipeFile: 'PDF',
+                icon: '📄'
+            },
+            {
+                id: 3,
+                nomorSurat: '003/FIN/2024',
+                namaSurat: 'Laporan Keuangan Q1 2024',
+                tanggal: '2024-03-05',
+                tipeFile: 'PDF',
+                icon: '📊'
+            },
+            {
+                id: 4,
+                nomorSurat: '004/MKT/2024',
+                namaSurat: 'Strategi Pemasaran Digital',
+                tanggal: '2024-03-20',
+                tipeFile: 'PDF',
+                icon: '📈'
+            },
+            {
+                id: 5,
+                nomorSurat: '005/OPS/2024',
+                namaSurat: 'Prosedur Operasional Standar',
+                tanggal: '2024-04-12',
+                tipeFile: 'PDF',
+                icon: '📋'
+            }
+        ];
+
+        let currentDocument = null;
+
+        // Initialize table on load
+        document.addEventListener('DOMContentLoaded', function() {
+            renderTable(documents);
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('searchNama').addEventListener('input', filterDocuments);
+            document.getElementById('filterFromDate').addEventListener('change', filterDocuments);
+            document.getElementById('filterToDate').addEventListener('change', filterDocuments);
+            document.getElementById('inputForm').addEventListener('submit', handleFormSubmit);
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            const emptyMessage = document.getElementById('emptyMessage');
+
+            if (data.length === 0) {
+                tbody.innerHTML = '';
+                emptyMessage.style.display = 'block';
+                return;
+            }
+
+            emptyMessage.style.display = 'none';
+            tbody.innerHTML = data.map(doc => `
+                <tr>
+                    <td>${doc.nomorSurat}</td>
+                    <td>${doc.namaSurat}</td>
+                    <td>${formatDate(doc.tanggal)}</td>
+                    <td>
+                        <button class="action-btn" onclick="showDetail(${doc.id})">Lihat Surat</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterDocuments() {
+            const searchTerm = document.getElementById('searchNama').value.toLowerCase();
+            const fromDate = document.getElementById('filterFromDate').value;
+            const toDate = document.getElementById('filterToDate').value;
+
+            const filtered = documents.filter(doc => {
+                const nameMatch = doc.namaSurat.toLowerCase().includes(searchTerm);
+                const dateMatch = (!fromDate || doc.tanggal >= fromDate) && 
+                                 (!toDate || doc.tanggal <= toDate);
+                return nameMatch && dateMatch;
+            });
+
+            renderTable(filtered);
+        }
+
+        function showDetail(id) {
+            currentDocument = documents.find(doc => doc.id === id);
+            if (!currentDocument) return;
+
+            document.getElementById('detailNomorSurat').textContent = currentDocument.nomorSurat;
+            document.getElementById('detailNamaSurat').textContent = currentDocument.namaSurat;
+            document.getElementById('detailTanggalSurat').textContent = formatDate(currentDocument.tanggal);
+            document.getElementById('detailTipeFile').textContent = currentDocument.tipeFile;
+
+            const previewContainer = document.getElementById('previewContainer');
+            previewContainer.innerHTML = `
+                <div class="preview-icon">${currentDocument.icon}</div>
+                <div>Preview file: ${currentDocument.namaSurat}</div>
+                <div style="font-size: 12px; color: #9ca3af; margin-top: 10px;">Format: ${currentDocument.tipeFile}</div>
+            `;
+
+            document.getElementById('detailSection').classList.add('active');
+            document.querySelector('.output-section').style.display = 'none';
+        }
+
+        function backToList() {
+            document.getElementById('detailSection').classList.remove('active');
+            document.querySelector('.output-section').style.display = 'block';
+        }
+
+        function downloadFile() {
+            if (currentDocument) {
+                alert(`Download dimulai: ${currentDocument.namaSurat}.${currentDocument.tipeFile.toLowerCase()}`);
+            }
+        }
+
+        function formatDate(dateStr) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateStr).toLocaleDateString('id-ID', options);
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            alert('Dokumen berhasil disimpan!\n\nCatatan: Ini adalah UI mockup - data tidak benar-benar disimpan.');
+            document.getElementById('inputForm').reset();
+        }
+    </script>
+</body>
+</html>
