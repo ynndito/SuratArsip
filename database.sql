@@ -19,3 +19,4 @@ CREATE TABLE IF NOT EXISTS surat (
     INDEX idx_tanggal_surat (tanggal_surat)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+

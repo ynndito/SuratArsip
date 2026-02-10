@@ -302,6 +302,8 @@ $is_pdf = strtolower($surat['tipe_file']) == 'pdf';
                 <?php if ($file_exists): ?>
                     <a href="download.php?id=<?php echo $surat['id']; ?>" class="btn-primary">⬇ Download File</a>
                 <?php endif; ?>
+                <a href="edit.php?id=<?php echo $surat['id']; ?>" class="btn-primary">✏ Edit</a>
+                <a href="delete.php?id=<?php echo $surat['id']; ?>" class="btn-secondary" onclick="return confirm('Yakin ingin menghapus dokumen ini? Tindakan ini tidak dapat dibatalkan.');">🗑 Hapus</a>
                 <a href="index.php" class="btn-secondary">← Kembali ke Daftar</a>
             </div>
         </div>
@@ -309,4 +311,5 @@ $is_pdf = strtolower($surat['tipe_file']) == 'pdf';
 </body>
 </html>
 <?php mysqli_close($conn); ?>
+
 
